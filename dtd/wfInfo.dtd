@@ -1,6 +1,6 @@
-<!ELEMENT wfInfo (workflow+, process+)>
+<!ELEMENT wfInfo (workflow+)>
 
-<!ELEMENT workflow (action+) >
+<!ELEMENT workflow (action+, process+) >
 <!ATTLIST workflow
 		name	CDATA	#REQUIRED
 >
@@ -10,6 +10,11 @@
 		name		CDATA			#REQUIRED
 		type		(simple | process)	#REQUIRED
 		automInst	(true | false)		#REQUIRED
+>
+
+<!ELEMENT actor (role) >
+<!ATTLIST actor
+		name	CDATA	#REQUIRED
 >
 
 <!ELEMENT role (#PCDATA) >
@@ -25,12 +30,10 @@
 
 <!ELEMENT process (actionStatus+) >
 <!ATTLIST process
-		workflowName	CDATA	#REQUIRED
 		startAt		CDATA	#REQUIRED
 >
 
-<!ELEMENT actionStatus (actionName) >
+<!ELEMENT actionStatus (actionName, actor?) >
 <!ATTLIST actionStatus
-		actor		CDATA	#IMPLIED
 		terminatedAt	CDATA	#IMPLIED
 >

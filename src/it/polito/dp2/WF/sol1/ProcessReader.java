@@ -7,10 +7,12 @@ import org.w3c.dom.*;
 public class ProcessReader implements it.polito.dp2.WF.ProcessReader {
 	
 	private Node process;
+	private String workflowName;
 	
-	public ProcessReader(Node pr)
+	public ProcessReader(Node pr, String wfn)
 	{
 		process = pr;
+		workflowName = wfn;
 	}
 	
 	@Override
@@ -41,9 +43,6 @@ public class ProcessReader implements it.polito.dp2.WF.ProcessReader {
 
 	@Override
 	public WorkflowReader getWorkflow() {
-		HashMap<String,String> attr = WorkFlowModel.getAttibutes(process);
-		String workflowName = attr.get("workflowName");
-		
 		return (new WorkflowReader(WorkFlowModel.findWorkflow(workflowName)));
 	}
 

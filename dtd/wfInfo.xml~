@@ -24,6 +24,24 @@
 		<action name="Publication" type="simple" automInst="false">
 			<role>Editor</role>
 		</action>
+
+		<process startAt="Tue Oct 06 01:00:40 CEST 2015">
+			<actionStatus terminatedAt="06/10/2015 03:10">
+				<actor name="Jerry Castigli" >
+					<role></role>
+				</actor>
+				<actionName>Writing</actionName>
+			</actionStatus>
+			<actionStatus  terminatedAt="06/10/2015 09:37">
+				<actor name="Richard Di Creo">
+					<role></role>
+				</actor>
+				<actionName>Checking</actionName>
+			</actionStatus>
+			<actionStatus>
+				<actionName>Revising</actionName>
+			</actionStatus>
+		</process>
 	</workflow>
 
 
@@ -43,18 +61,5 @@
 			<role>Sales Manager</role>
 			<nestedWorkflow workflowName="Prepaid Sale" />
 		</action>
-	</workflow>
-
-	<process startAt="Tue Oct 06 01:00:40 CEST 2015" workflowName="ArticleProduction">
-		<actionStatus actor="Jerry Castigli" terminatedAt="06/10/2015 03:10">
-			<actionName>Writing</actionName>
-		</actionStatus>
-		<actionStatus actor="Richard Di Creo" terminatedAt="06/10/2015 09:37">
-			<actionName>Checking</actionName>
-		</actionStatus>
-		<actionStatus>
-			<actionName>Revising</actionName>
-		</actionStatus>
-	</process>
+	</workflow>		
 </wfInfo>
-

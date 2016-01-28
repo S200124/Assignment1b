@@ -57,21 +57,22 @@ public final class WorkFlowModel {
 	
 	public static List<Node> allProcesses()
 	{
-		return getChildNodesByType(getRootNode(),"process");
+		List<Node> ret = new ArrayList<Node>();
+		
+		for(Node workflowNode:allWorkflow())
+			for(Node processNode:getChildNodesByType(workflowNode,"process"))
+				ret.add(processNode);
+		
+		return ret;
 	}
 	
 	public static List<Node> whereProcesses(String workflowName)
 	{
 		List<Node> ret = new ArrayList<Node>();
-		
-		for(Node currentNode:allProcesses())
-		{
-			NamedNodeMap nnm = currentNode.getAttributes();
-			if (nnm != null && nnm.getLength() > 0)
-				for (int iAttr=0; iAttr < nnm.getLength(); iAttr++)
-	            	   if(nnm.item(iAttr).getNodeName() == "workflowName" && nnm.item(iAttr).getNodeValue() == workflowName)
-	            		   ret.add(currentNode);
-		}
+		Node workflowNode = findWorkflow(workflowName);
+				
+		for(Node processNode:getChildNodesByType(workflowNode,"process"))
+			ret.add(processNode);
 		
 		return ret;
 	}
@@ -141,6 +142,16 @@ public final class WorkFlowModel {
 	public static Node getRole(Node action)
 	{
 		List<Node> childs = getChildNodesByType(action, "role");
+		if(childs.size() != 1)
+			return null;
+		else
+			return childs.get(0);
+			
+	}
+	
+	public static Node getActionName(Node actionStatus)
+	{
+		List<Node> childs = getChildNodesByType(actionStatus, "actionName");
 		if(childs.size() != 1)
 			return null;
 		else

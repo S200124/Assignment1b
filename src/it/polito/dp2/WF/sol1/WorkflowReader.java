@@ -14,7 +14,7 @@ public class WorkflowReader implements it.polito.dp2.WF.WorkflowReader {
 	}
 	@Override
 	public ActionReader getAction(String arg0) {
-		return (new ActionReader(WorkFlowModel.findAction(workflow, arg0)));
+		return (new ActionReader(WorkFlowModel.findAction(workflow, arg0), getName()));
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class WorkflowReader implements it.polito.dp2.WF.WorkflowReader {
 		Set<it.polito.dp2.WF.ActionReader> ret = new HashSet<it.polito.dp2.WF.ActionReader>();
 		
 		for(Node currentNode:WorkFlowModel.allActions(workflow))
-			ret.add(new ActionReader(currentNode));
+			ret.add(new ActionReader(currentNode, getName()));
 		
 		return ret;
 	}
@@ -40,7 +40,7 @@ public class WorkflowReader implements it.polito.dp2.WF.WorkflowReader {
 		Set<it.polito.dp2.WF.ProcessReader> ret = new HashSet<it.polito.dp2.WF.ProcessReader>();
 		
 		for(Node currentNode:WorkFlowModel.whereProcesses(name))
-			ret.add(new ProcessReader(currentNode));
+			ret.add(new ProcessReader(currentNode, name));
 		
 		return ret;
 	}

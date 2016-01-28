@@ -2,6 +2,8 @@ package it.polito.dp2.WF.sol1;
 
 import it.polito.dp2.WF.Actor;
 import java.util.Calendar;
+import java.util.HashMap;
+
 import org.w3c.dom.Node;
 
 public class ActionStatusReader implements it.polito.dp2.WF.ActionStatusReader {
@@ -15,8 +17,8 @@ public class ActionStatusReader implements it.polito.dp2.WF.ActionStatusReader {
 	
 	@Override
 	public String getActionName() {
-		// TODO Auto-generated method stub
-		return null;
+		String role = WorkFlowModel.getNodeValue(WorkFlowModel.getActionName(actionStat));
+		return attr;
 	}
 
 	@Override

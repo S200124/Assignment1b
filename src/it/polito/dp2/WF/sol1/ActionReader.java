@@ -7,16 +7,17 @@ import org.w3c.dom.*;
 public class ActionReader implements it.polito.dp2.WF.ActionReader {
 	
 	private Node action;
+	private String workflowName;
 	
-	public ActionReader(Node act)
+	public ActionReader(Node act, String wfn)
 	{
 		action = act;
+		workflowName = wfn;
 	}
 
 	@Override
 	public WorkflowReader getEnclosingWorkflow() {
-		// TODO Auto-generated method stub
-		return null;
+		return (new WorkflowReader(WorkFlowModel.findWorkflow(workflowName)));
 	}
 
 	@Override
