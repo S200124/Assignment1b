@@ -1,7 +1,6 @@
 package it.polito.dp2.WF.sol1;
 
 import java.util.*;
-
 import org.w3c.dom.*;
 
 
@@ -15,20 +14,23 @@ public class WorkflowReader implements it.polito.dp2.WF.WorkflowReader {
 	}
 	@Override
 	public ActionReader getAction(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return (new ActionReader(WorkFlowModel.findAction(workflow, arg0)));
 	}
 
 	@Override
 	public Set<it.polito.dp2.WF.ActionReader> getActions() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<it.polito.dp2.WF.ActionReader> ret = new HashSet<it.polito.dp2.WF.ActionReader>();
+		
+		for(Node currentNode:WorkFlowModel.allActions(workflow))
+			ret.add(new ActionReader(currentNode));
+		
+		return ret;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		HashMap<String,String> attr = WorkFlowModel.getAttibutes(workflow);
+		return attr.get("name");
 	}
 
 	@Override

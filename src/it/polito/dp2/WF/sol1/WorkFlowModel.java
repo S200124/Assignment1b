@@ -12,7 +12,7 @@ public final class WorkFlowModel {
 	
 	private WorkFlowModel() {}
 	
-	private static Node accessFile()
+	private static Node getRootNode()
 	{
 		try
 		{
@@ -30,10 +30,9 @@ public final class WorkFlowModel {
 		return null;
 	}
 	
-	private static List<Node> getNodesByType(String type)
+	private static List<Node> getChildNodesByType(Node root, String type)
 	{
 		List<Node> ret = new ArrayList<Node>();
-		Node root = accessFile();
 		
 		if(root != null)
 		{
@@ -53,12 +52,12 @@ public final class WorkFlowModel {
 	
 	public static List<Node> allWorkflow()
 	{
-		return getNodesByType("workflow");
+		return getChildNodesByType(getRootNode(),"workflow");
 	}
 	
 	public static List<Node> allProcesses()
 	{
-		return getNodesByType("process");
+		return getChildNodesByType(getRootNode(),"process");
 	}
 	
 	public static List<Node> whereProcesses(String workflowName)
@@ -103,5 +102,49 @@ public final class WorkFlowModel {
 		}
 		
 		return ret;
+	}
+
+	public static String getNodeValue(Node currentNode)
+	{
+		if (currentNode.getNodeType() == Node.ELEMENT_NODE && currentNode.hasChildNodes())
+		{
+               Node nTextChild = currentNode.getChildNodes().item(0);
+               return nTextChild.getNodeValue();
+        }
+		return null;
+	}
+	
+	public static List<Node> allActionStatus(Node process)
+	{
+		return getChildNodesByType(process, "actionStatus");
+	}
+	
+	public static List<Node> allActions(Node workflow)
+	{
+		return getChildNodesByType(workflow, "action");
+	}
+
+	public static Node findAction(Node workflow, String name)
+	{	
+		for(Node currentNode:allActions(workflow))
+		{
+			NamedNodeMap nnm = currentNode.getAttributes();
+			if (nnm != null && nnm.getLength() > 0)
+				for (int iAttr=0; iAttr < nnm.getLength(); iAttr++)
+	            	   if(nnm.item(iAttr).getNodeName() == "name" && nnm.item(iAttr).getNodeValue() == name)
+	            		   return currentNode;
+		}
+		
+		return null;
+	}
+
+	public static Node getRole(Node action)
+	{
+		List<Node> childs = getChildNodesByType(action, "role");
+		if(childs.size() != 1)
+			return null;
+		else
+			return childs.get(0);
+			
 	}
 }
