@@ -6,8 +6,18 @@ import it.polito.dp2.WF.WorkflowReader;
 import java.util.Calendar;
 import java.util.List;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 public class ProcessReader implements it.polito.dp2.WF.ProcessReader {
 
+	private Node process;
+	
+	public ProcessReader(Node proc)
+	{
+		process = proc;
+	}
+	
 	@Override
 	public Calendar getStartTime() {
 		// TODO Auto-generated method stub
