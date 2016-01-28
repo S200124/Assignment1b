@@ -1,0 +1,59 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE wfInfo SYSTEM "wfInfo.dtd">
+<wfInfo>
+	<workflow name="ArticleProduction">
+		<action name="Writing" type="simple" automInst="true">
+			<role>Journalist</role>
+			<followingActions>
+				<actionName>Checking</actionName>
+			</followingActions>
+		</action>
+		<action name="Checking" type="simple" automInst="false">
+			<role>Editor</role>
+			<followingActions>
+				<actionName>Revising</actionName>
+				<actionName>Publication</actionName>
+			</followingActions>
+		</action>
+		<action name="Revising" type="simple" automInst="false">
+			<role>Journalist</role>
+			<followingActions> 
+				<actionName>Checking</actionName>
+			</followingActions>
+		</action>
+		<action name="Publication" type="simple" automInst="false">
+			<role>Editor</role>
+		</action>
+	</workflow>
+
+
+	<workflow name="SaleManagement">
+		<action name="Accept Order" type="simple" automInst="true">
+			<role>Salesman</role>
+			<followingActions>
+				<actionName>Checking</actionName>
+				<actionName>Revising</actionName>
+			</followingActions>
+		</action>
+		<action name="Checking" type="process" automInst="false">
+			<role>Sales Manager</role>
+			<nestedWorkflow workflowName="Normal Sale" />
+		</action>
+		<action name="Revising" type="process" automInst="false">
+			<role>Sales Manager</role>
+			<nestedWorkflow workflowName="Prepaid Sale" />
+		</action>
+	</workflow>
+
+	<process startAt="Tue Oct 06 01:00:40 CEST 2015" workflowName="ArticleProduction">
+		<actionStatus actor="Jerry Castigli" terminatedAt="06/10/2015 03:10">
+			<actionName>Writing</actionName>
+		</actionStatus>
+		<actionStatus actor="Richard Di Creo" terminatedAt="06/10/2015 09:37">
+			<actionName>Checking</actionName>
+		</actionStatus>
+		<actionStatus>
+			<actionName>Revising</actionName>
+		</actionStatus>
+	</process>
+</wfInfo>
