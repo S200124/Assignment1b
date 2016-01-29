@@ -82,7 +82,7 @@ public class WFInfoSerializer {
 			Element rootElement = doc.createElement("wfInfo");
 			doc.appendChild(rootElement);
 			
-			if(appendWorkflows(doc, rootElement) && appendProcesses(doc, rootElement))
+			if(appendData(doc, rootElement))
 			{
 
 			// write the content into XML file
@@ -109,7 +109,7 @@ public class WFInfoSerializer {
 	}
 
 
-	private boolean appendProcesses(Document doc, Element rootElement) {
+	private void appendProcesses(Document doc, Element rootElement, String workflowName) {
 		try
 		{
 			// Get the list of processes
@@ -118,47 +118,55 @@ public class WFInfoSerializer {
 			// For each process print related data
 			for (ProcessReader wfr: set)
 			{
-				Element process = doc.createElement("process");
-				rootElement.appendChild(process);
-				
-				process.setAttribute("workflowName", wfr.getWorkflow().getName());
-				process.setAttribute("startAt", String.valueOf(wfr.getStartTime().getTime()));
-				/*System.out.println("Process started at " + 
-									dateFormat.format(wfr.getStartTime().getTime()) +
-						            " "+"- Workflow " + wfr.getWorkflow().getName());
-				System.out.println("Status:");*/
-				List<ActionStatusReader> statusSet = wfr.getStatus();
-
-				for (ActionStatusReader asr : statusSet)
+				if(wfr.getWorkflow().getName() == workflowName)
 				{
-					Element actionStatus = doc.createElement("actionStatus");
-					process.appendChild(actionStatus);
+					Element process = doc.createElement("process");
+					rootElement.appendChild(process);
 					
-					Element actionName = doc.createElement("actionName");
-					actionName.appendChild(doc.createTextNode(asr.getActionName()));
-					actionStatus.appendChild(actionName);
-					
-					//System.out.print(asr.getActionName()+"\t");
-					if (asr.isTakenInCharge())
-						actionStatus.setAttribute("actor", asr.getActor().getName());
-						//System.out.print(asr.getActor().getName()+"\t\t");
+					process.setAttribute("startAt", String.valueOf(wfr.getStartTime().getTime()));
+					/*System.out.println("Process started at " + 
+										dateFormat.format(wfr.getStartTime().getTime()) +
+							            " "+"- Workflow " + wfr.getWorkflow().getName());
+					System.out.println("Status:");*/
+					List<ActionStatusReader> statusSet = wfr.getStatus();
 	
-					if (asr.isTerminated())
-						actionStatus.setAttribute("terminatedAt", String.valueOf(dateFormat.format(asr.getTerminationTime().getTime())));
-						//System.out.println(dateFormat.format(asr.getTerminationTime().getTime()));
-	
+					for (ActionStatusReader asr : statusSet)
+					{
+						Element actionStatus = doc.createElement("actionStatus");
+						process.appendChild(actionStatus);
+						
+						Element actionName = doc.createElement("actionName");
+						actionName.appendChild(doc.createTextNode(asr.getActionName()));
+						actionStatus.appendChild(actionName);
+						
+						//System.out.print(asr.getActionName()+"\t");
+						if (asr.isTakenInCharge())
+						{
+							Element actor = doc.createElement("actor");
+							actionStatus.appendChild(actor);
+							actor.setAttribute("name", asr.getActor().getName());
+							//System.out.print(asr.getActor().getName()+"\t\t");
+							Element role = doc.createElement("role");
+							role.appendChild(doc.createTextNode(asr.getActor().getRole()));
+							actor.appendChild(role);
+						}
+		
+						if (asr.isTerminated())
+							actionStatus.setAttribute("terminatedAt", String.valueOf(dateFormat.format(asr.getTerminationTime().getTime())));
+							//System.out.println(dateFormat.format(asr.getTerminationTime().getTime()));
+		
+					}
 				}
 			}
-			return true;
 		}
 		catch(Exception ex)
 		{
-			return false;
+			
 		}
 	}
 
 
-	private boolean appendWorkflows(Document doc, Element rootElement) {
+	private boolean appendData(Document doc, Element rootElement) {
 		try
 		{
 			Set<WorkflowReader> set = monitor.getWorkflows();
@@ -169,6 +177,8 @@ public class WFInfoSerializer {
 				rootElement.appendChild(workflow);
 				
 				workflow.setAttribute("name", wfr.getName());
+				
+				appendProcesses(doc, workflow, wfr.getName());
 				
 				// Print actions
 				//System.out.println("Actions:");
