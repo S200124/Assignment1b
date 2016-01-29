@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.List;
 
 import java.io.File;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,6 +42,7 @@ public class WFInfoSerializer {
 	 * @throws WorkflowMonitorException 
 	 */
 	public WFInfoSerializer() throws WorkflowMonitorException {
+		System.setProperty("it.polito.dp2.WF.WorkflowMonitorFactory", "it.polito.dp2.WF.Random.WorkflowMonitorFactoryImpl");
 		WorkflowMonitorFactory factory = WorkflowMonitorFactory.newInstance();
 		monitor = factory.newWorkflowMonitor();
 		dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
@@ -58,15 +60,36 @@ public class WFInfoSerializer {
 	public static void main(String[] args) {
 		WFInfoSerializer wf;
 		try {
+			//String source = "dtd/file.xml";
+			String source = args[0];
 			wf = new WFInfoSerializer();
-			//wf.printAll();
-			wf.createXmlFile(args[0]);
+			wf.createXmlFile(source);
+			//wf.checkLibrary(source);
 		} catch (WorkflowMonitorException e) {
 			System.err.println("Could not instantiate data generator.");
 			e.printStackTrace();
 			System.exit(1);
 		}
 	}
+	
+	/*private void checkLibrary(String fileName)
+	{
+		System.setProperty("it.polito.dp2.WF.WorkflowMonitorFactory", "it.polito.dp2.WF.sol1.WorkflowMonitorFactory");
+		System.setProperty("it.polito.dp2.WF.sol1.WFInfo.file", fileName);
+		
+		try {
+			WorkflowMonitor testWorkflowMonitor = WorkflowMonitorFactory.newInstance().newWorkflowMonitor();
+			for(ProcessReader process:testWorkflowMonitor.getProcesses())
+				System.out.println(String.valueOf(process.getStartTime()));
+			
+		} catch (WorkflowMonitorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FactoryConfigurationError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}*/
 	
 	public void createXmlFile(String fileName)
 	{
@@ -79,7 +102,7 @@ public class WFInfoSerializer {
 			DocumentType doctype = doc.getImplementation().createDocumentType("wfInfo", "", "wfInfo.dtd");
 			
 			// root element
-			Element rootElement = doc.createElement("wfInfo");
+			Element rootElement = doc.createElement("root");
 			doc.appendChild(rootElement);
 			
 			if(appendData(doc, rootElement))
@@ -90,8 +113,7 @@ public class WFInfoSerializer {
 				Transformer transformer = transformerFactory.newTransformer();
 				transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
 				DOMSource source = new DOMSource(doc);
-				StreamResult result = new StreamResult(new File("src/it/polito/dp2/WF/sol1/" + fileName));
-	
+				StreamResult result = new StreamResult(new File(fileName));
 				// Output to console for testing
 				// StreamResult result = new StreamResult(System.out);
 	
@@ -135,10 +157,6 @@ public class WFInfoSerializer {
 						Element actionStatus = doc.createElement("actionStatus");
 						process.appendChild(actionStatus);
 						
-						Element actionName = doc.createElement("actionName");
-						actionName.appendChild(doc.createTextNode(asr.getActionName()));
-						actionStatus.appendChild(actionName);
-						
 						//System.out.print(asr.getActionName()+"\t");
 						if (asr.isTakenInCharge())
 						{
@@ -150,6 +168,10 @@ public class WFInfoSerializer {
 							role.appendChild(doc.createTextNode(asr.getActor().getRole()));
 							actor.appendChild(role);
 						}
+						
+						Element actionName = doc.createElement("actionName");
+						actionName.appendChild(doc.createTextNode(asr.getActionName()));
+						actionStatus.appendChild(actionName);
 		
 						if (asr.isTerminated())
 							actionStatus.setAttribute("terminatedAt", String.valueOf(dateFormat.format(asr.getTerminationTime().getTime())));
@@ -178,8 +200,6 @@ public class WFInfoSerializer {
 				
 				workflow.setAttribute("name", wfr.getName());
 				
-				appendProcesses(doc, workflow, wfr.getName());
-				
 				// Print actions
 				//System.out.println("Actions:");
 				Set<ActionReader> setAct = wfr.getActions();
@@ -198,7 +218,7 @@ public class WFInfoSerializer {
 					
 					if (ar instanceof SimpleActionReader)
 					{
-						action.setAttribute("type", "Simple");
+						action.setAttribute("type", "simple");
 						
 						Set<ActionReader> setNxt = ((SimpleActionReader)ar).getPossibleNextActions();
 						if(!setNxt.isEmpty())
@@ -216,13 +236,14 @@ public class WFInfoSerializer {
 					}
 					else if (ar instanceof ProcessActionReader)
 					{
-						action.setAttribute("type", "Process");
+						action.setAttribute("type", "process");
 						
 						Element nestedWorkflow = doc.createElement("nestedWorkflow");
 						nestedWorkflow.setAttribute("workflowName", ((ProcessActionReader)ar).getActionWorkflow().getName());
 						action.appendChild(nestedWorkflow);
 					}
 				}
+				appendProcesses(doc, workflow, wfr.getName());
 			}
 			return true;
 		}

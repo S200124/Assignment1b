@@ -20,7 +20,8 @@ public class ProcessReader implements it.polito.dp2.WF.ProcessReader {
 		HashMap<String,String> attr = WorkFlowModel.getAttibutes(process);
 		try
 		{
-			DateFormat df = new SimpleDateFormat("D M j G:i:s T Y");
+			//"yyyy.MM.dd G 'at' HH:mm:ss z"	2001.07.04 AD at 12:08:56 PDT
+			DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
 			Calendar cal  = Calendar.getInstance();
 			cal.setTime(df.parse(attr.get("startAt")));
 			return cal;

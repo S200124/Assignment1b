@@ -2,10 +2,8 @@ package it.polito.dp2.WF.sol1;
 
 import java.io.File;
 import java.util.*;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.w3c.dom.*;
 
 public final class WorkFlowModel {
@@ -19,9 +17,16 @@ public final class WorkFlowModel {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = dbf.newDocumentBuilder();
 	        File xmlFile = new File(System.getProperty("it.polito.dp2.WF.sol1.WFInfo.file"));
+	        /*
+	        byte[] encoded = Files.readAllBytes(Paths.get(xmlFile.getPath()));
+	        InputSource is = new InputSource();
+	        is.setCharacterStream(new StringReader(new String(encoded)));
+	        Document dom = builder.parse(is);
+	        */
 	        Document dom = builder.parse(xmlFile);
+	        dom.normalize();
 	        if(dom.hasChildNodes())
-	        	return dom;
+	        	return dom.getLastChild();
 		}
 		catch (Exception ex)
 		{
@@ -33,16 +38,14 @@ public final class WorkFlowModel {
 	private static List<Node> getChildNodesByType(Node root, String type)
 	{
 		List<Node> ret = new ArrayList<Node>();
-		
 		if(root != null)
 		{
 			NodeList nlChilds = root.getChildNodes();
-            
             for (int iChild = 0; iChild < nlChilds.getLength(); iChild++)
             {
             	Node currentNode = nlChilds.item(iChild);
             	if (currentNode.getNodeType() == Node.ELEMENT_NODE)
-            		if (currentNode.getNodeName() == type)
+            		if (currentNode.getNodeName().trim().equals(type))
             			ret.add(currentNode);
             }
 		}
@@ -84,8 +87,8 @@ public final class WorkFlowModel {
 			NamedNodeMap nnm = currentNode.getAttributes();
 			if (nnm != null && nnm.getLength() > 0)
 				for (int iAttr=0; iAttr < nnm.getLength(); iAttr++)
-	            	   if(nnm.item(iAttr).getNodeName() == "name" && nnm.item(iAttr).getNodeValue() == name)
-	            		   return currentNode;
+            	   if(nnm.item(iAttr).getNodeName() == "name" && nnm.item(iAttr).getNodeValue().trim().equals(name))
+            		   return currentNode;
 		}
 		
 		return null;
@@ -135,7 +138,7 @@ public final class WorkFlowModel {
 				NamedNodeMap nnm = currentNode.getAttributes();
 				if (nnm != null && nnm.getLength() > 0)
 					for (int iAttr=0; iAttr < nnm.getLength(); iAttr++)
-		            	   if(nnm.item(iAttr).getNodeName() == "name" && nnm.item(iAttr).getNodeValue() == name)
+		            	   if(nnm.item(iAttr).getNodeName() == "name" && nnm.item(iAttr).getNodeValue().trim().equals(name))
 		            		   return currentNode;
 			}
 		

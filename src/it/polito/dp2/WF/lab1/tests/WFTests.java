@@ -10,7 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import it.polito.dp2.WF.*;
-import it.polito.dp2.WF.lab1.WFInfo;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

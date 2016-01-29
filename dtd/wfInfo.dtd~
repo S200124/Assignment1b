@@ -1,6 +1,6 @@
 <!ELEMENT wfInfo (workflow+)>
 
-<!ELEMENT workflow (action+, process+) >
+<!ELEMENT workflow (action+, process*) >
 <!ATTLIST workflow
 		name	CDATA	#REQUIRED
 >
@@ -33,7 +33,7 @@
 		startAt		CDATA	#REQUIRED
 >
 
-<!ELEMENT actionStatus (actionName, actor?) >
+<!ELEMENT actionStatus (actor?, actionName) >
 <!ATTLIST actionStatus
 		terminatedAt	CDATA	#IMPLIED
 >
