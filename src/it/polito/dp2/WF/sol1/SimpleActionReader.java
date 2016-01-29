@@ -1,40 +1,32 @@
 package it.polito.dp2.WF.sol1;
 
-import it.polito.dp2.WF.ActionReader;
-import it.polito.dp2.WF.WorkflowReader;
+import java.util.*;
 
-import java.util.Set;
+import org.w3c.dom.Node;
 
-public class SimpleActionReader implements it.polito.dp2.WF.SimpleActionReader {
+public class SimpleActionReader extends ActionReader {
 
-	@Override
-	public WorkflowReader getEnclosingWorkflow() {
-		// TODO Auto-generated method stub
-		return null;
+	private Node action;
+	private String workflowName;
+	
+	public SimpleActionReader(Node act, String wfn) {
+		super(act, wfn);
+		action = act;
+		workflowName = wfn;
 	}
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getRole() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAutomaticallyInstantiated() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public Set<ActionReader> getPossibleNextActions() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<ActionReader> ret = new HashSet<ActionReader>();
+		
+		for(Node actionName:WorkFlowModel.followingActions(action))
+			for(Node actionNode:WorkFlowModel.allActions(WorkFlowModel.findWorkflow(workflowName)))
+			{
+				HashMap<String,String> attr = WorkFlowModel.getAttibutes(actionNode);
+				if(WorkFlowModel.getNodeValue(actionName) == attr.get("name"))
+					ret.add(new ActionReader(actionNode, workflowName));
+			}
+		
+		return ret;
 	}
 
 }

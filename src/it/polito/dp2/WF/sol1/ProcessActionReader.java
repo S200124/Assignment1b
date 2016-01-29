@@ -1,37 +1,18 @@
 package it.polito.dp2.WF.sol1;
 
-import it.polito.dp2.WF.WorkflowReader;
+import org.w3c.dom.Node;
 
-public class ProcessActionReader implements it.polito.dp2.WF.ProcessActionReader {
+public class ProcessActionReader extends ActionReader {
 
-	@Override
-	public WorkflowReader getEnclosingWorkflow() {
-		// TODO Auto-generated method stub
-		return null;
+	private String workflowName;
+	
+	public ProcessActionReader(Node act, String wfn) {
+		super(act, wfn);
+		workflowName = wfn;
 	}
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getRole() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAutomaticallyInstantiated() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public WorkflowReader getActionWorkflow() {
-		// TODO Auto-generated method stub
-		return null;
+		return (new WorkflowReader(WorkFlowModel.findWorkflow(workflowName)));
 	}
 
 }

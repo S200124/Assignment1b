@@ -176,4 +176,16 @@ public final class WorkFlowModel {
 		return null;
 			
 	}
+	
+	public static List<Node> followingActions(Node action)
+	{
+		if(action != null)
+		{
+			List<Node> childs = getChildNodesByType(action, "followingActions");
+			if(childs.size() == 1)
+				return getChildNodesByType(childs.get(0), "actionName");
+		}
+		return null;
+			
+	}
 }
