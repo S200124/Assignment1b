@@ -102,7 +102,7 @@ public class WFInfoSerializer {
 			DocumentType doctype = doc.getImplementation().createDocumentType("wfInfo", "", "wfInfo.dtd");
 			
 			// root element
-			Element rootElement = doc.createElement("wfInfo");
+			Element rootElement = doc.createElement("root");
 			doc.appendChild(rootElement);
 			
 			if(appendData(doc, rootElement))
@@ -239,8 +239,7 @@ public class WFInfoSerializer {
 						action.setAttribute("type", "process");
 						
 						Element nestedWorkflow = doc.createElement("nestedWorkflow");
-						nestedWorkflow.appendChild(doc.createTextNode(((ProcessActionReader)ar).getActionWorkflow().getName()));
-						//nestedWorkflow.setAttribute("workflowName", );
+						nestedWorkflow.setAttribute("workflowName", ((ProcessActionReader)ar).getActionWorkflow().getName());
 						action.appendChild(nestedWorkflow);
 					}
 				}

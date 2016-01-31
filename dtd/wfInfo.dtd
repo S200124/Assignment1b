@@ -1,4 +1,4 @@
-<!ELEMENT root (workflow+)>
+<!ELEMENT wfInfo (workflow+)>
 
 <!ELEMENT workflow (action+, process*) >
 <!ATTLIST workflow
@@ -23,10 +23,7 @@
 
 <!ELEMENT actionName (#PCDATA) >
 
-<!ELEMENT nestedWorkflow EMPTY >
-<!ATTLIST nestedWorkflow
-		workflowName	CDATA		#REQUIRED
->
+<!ELEMENT nestedWorkflow (#PCDATA) >
 
 <!ELEMENT process (actionStatus+) >
 <!ATTLIST process

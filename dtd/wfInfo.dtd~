@@ -23,10 +23,7 @@
 
 <!ELEMENT actionName (#PCDATA) >
 
-<!ELEMENT nestedWorkflow EMPTY >
-<!ATTLIST nestedWorkflow
-		workflowName	CDATA		#REQUIRED
->
+<!ELEMENT nestedWorkflow (#PCDATA) >
 
 <!ELEMENT process (actionStatus+) >
 <!ATTLIST process
