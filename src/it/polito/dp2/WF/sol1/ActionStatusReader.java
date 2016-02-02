@@ -2,11 +2,10 @@ package it.polito.dp2.WF.sol1;
 
 import it.polito.dp2.WF.Actor;
 
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.*;
 
 import org.w3c.dom.Node;
 
@@ -45,17 +44,12 @@ public class ActionStatusReader implements it.polito.dp2.WF.ActionStatusReader {
 	@Override
 	public Calendar getTerminationTime() {
 		HashMap<String,String> attr = WorkFlowModel.getAttibutes(actionStat);
-		try
-		{   //"yyyy.MM.dd G 'at' HH:mm:ss z"	2001.07.04 AD at 12:08:56 PDT
-			DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			Calendar cal  = Calendar.getInstance();
-			cal.setTime(df.parse(attr.get("terminatedAt")));
-			return cal;
-		}
-		catch (ParseException e)
-		{
-			return null;
-		}
+		//DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		//dateFormat df = new dateFormat("dd/MM/yyyy hh:mm");
+		Calendar cal  = Calendar.getInstance();
+		cal.setTimeInMillis(Long.parseLong(attr.get("terminatedAt")));
+		//cal.setTime(dateFormat.parse());
+		return cal;
 	}
 
 	@Override
