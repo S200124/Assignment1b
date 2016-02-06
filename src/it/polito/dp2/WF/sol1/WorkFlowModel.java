@@ -60,22 +60,19 @@ public final class WorkFlowModel {
 	
 	public static List<Node> allProcesses()
 	{
-		List<Node> ret = new ArrayList<Node>();
-		
-		for(Node workflowNode:allWorkflow())
-			for(Node processNode:getChildNodesByType(workflowNode,"process"))
-				ret.add(processNode);
-		
-		return ret;
+		return getChildNodesByType(getRootNode(),"process");
 	}
 	
 	public static List<Node> whereProcesses(String workflowName)
 	{
 		List<Node> ret = new ArrayList<Node>();
-		Node workflowNode = findWorkflow(workflowName);
 				
-		for(Node processNode:getChildNodesByType(workflowNode,"process"))
-			ret.add(processNode);
+		for(Node processNode:allProcesses())
+		{
+			HashMap<String,String> att = getAttibutes(processNode);
+			if(att.get("workflowName").trim().equals(workflowName))
+				ret.add(processNode);
+		}
 		
 		return ret;
 	}

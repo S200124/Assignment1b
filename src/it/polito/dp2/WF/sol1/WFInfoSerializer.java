@@ -131,7 +131,7 @@ public class WFInfoSerializer {
 	}
 
 
-	private void appendProcesses(Document doc, Element rootElement, String workflowName) {
+	private void appendProcesses(Document doc, Element rootElement) {
 		try
 		{
 			// Get the list of processes
@@ -140,50 +140,48 @@ public class WFInfoSerializer {
 			// For each process print related data
 			for (ProcessReader wfr: set)
 			{
-				if(wfr.getWorkflow().getName() == workflowName)
+				Element process = doc.createElement("process");
+				rootElement.appendChild(process);
+				
+				process.setAttribute("startAt", String.valueOf(wfr.getStartTime().getTime()));
+				process.setAttribute("workflowName", wfr.getWorkflow().getName());
+				/*System.out.println("Process started at " + 
+									dateFormat.format(wfr.getStartTime().getTime()) +
+						            " "+"- Workflow " + wfr.getWorkflow().getName());
+				System.out.println("Status:");*/
+				List<ActionStatusReader> statusSet = wfr.getStatus();
+
+				for (ActionStatusReader asr : statusSet)
 				{
-					Element process = doc.createElement("process");
-					rootElement.appendChild(process);
+					Element actionStatus = doc.createElement("actionStatus");
+					process.appendChild(actionStatus);
 					
-					process.setAttribute("startAt", String.valueOf(wfr.getStartTime().getTime()));
-					/*System.out.println("Process started at " + 
-										dateFormat.format(wfr.getStartTime().getTime()) +
-							            " "+"- Workflow " + wfr.getWorkflow().getName());
-					System.out.println("Status:");*/
-					List<ActionStatusReader> statusSet = wfr.getStatus();
-	
-					for (ActionStatusReader asr : statusSet)
+					//System.out.print(asr.getActionName()+"\t");
+					if (asr.isTakenInCharge())
 					{
-						Element actionStatus = doc.createElement("actionStatus");
-						process.appendChild(actionStatus);
-						
-						//System.out.print(asr.getActionName()+"\t");
-						if (asr.isTakenInCharge())
-						{
-							Element actor = doc.createElement("actor");
-							actionStatus.appendChild(actor);
-							actor.setAttribute("name", asr.getActor().getName());
-							//System.out.print(asr.getActor().getName()+"\t\t");
-							Element role = doc.createElement("role");
-							role.appendChild(doc.createTextNode(asr.getActor().getRole()));
-							actor.appendChild(role);
-						}
-						
-						Element actionName = doc.createElement("actionName");
-						actionName.appendChild(doc.createTextNode(asr.getActionName()));
-						actionStatus.appendChild(actionName);
-		
-						if (asr.isTerminated())
-							actionStatus.setAttribute("terminatedAt", String.valueOf(asr.getTerminationTime().getTimeInMillis()));
-							//System.out.println(dateFormat.format(asr.getTerminationTime().getTime()));
-		
+						Element actor = doc.createElement("actor");
+						actionStatus.appendChild(actor);
+						actor.setAttribute("name", asr.getActor().getName());
+						//System.out.print(asr.getActor().getName()+"\t\t");
+						Element role = doc.createElement("role");
+						role.appendChild(doc.createTextNode(asr.getActor().getRole()));
+						actor.appendChild(role);
 					}
+					
+					Element actionName = doc.createElement("actionName");
+					actionName.appendChild(doc.createTextNode(asr.getActionName()));
+					actionStatus.appendChild(actionName);
+	
+					if (asr.isTerminated())
+						actionStatus.setAttribute("terminatedAt", String.valueOf(asr.getTerminationTime().getTimeInMillis()));
+						//System.out.println(dateFormat.format(asr.getTerminationTime().getTime()));
+	
 				}
 			}
 		}
 		catch(Exception ex)
 		{
-			
+			ex.printStackTrace();
 		}
 	}
 
@@ -244,8 +242,8 @@ public class WFInfoSerializer {
 						action.appendChild(nestedWorkflow);
 					}
 				}
-				appendProcesses(doc, workflow, wfr.getName());
 			}
+			appendProcesses(doc, rootElement);
 			return true;
 		}
 		catch(Exception ex)
