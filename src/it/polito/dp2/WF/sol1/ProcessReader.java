@@ -1,35 +1,25 @@
 package it.polito.dp2.WF.sol1;
 
-import java.text.*;
 import java.util.*;
+
 import org.w3c.dom.*;
 
 public class ProcessReader implements it.polito.dp2.WF.ProcessReader {
 	
 	private Node process;
-	private String workflowName;
 	
-	public ProcessReader(Node pr, String wfn)
+	public ProcessReader(Node pr)
 	{
 		process = pr;
-		workflowName = wfn;
 	}
 	
 	@Override
 	public Calendar getStartTime() {
 		HashMap<String,String> attr = WorkFlowModel.getAttibutes(process);
-		try
-		{
-			//"yyyy.MM.dd G 'at' HH:mm:ss z"	2001.07.04 AD at 12:08:56 PDT
-			DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
-			Calendar cal  = Calendar.getInstance();
-			cal.setTime(df.parse(attr.get("startAt")));
-			return cal;
-		}
-		catch (ParseException e)
-		{
-			return null;
-		}	
+		
+		Calendar cal  = Calendar.getInstance();
+		cal.setTimeInMillis(Long.parseLong(attr.get("startAt")));
+		return cal;	
 	}
 
 	@Override
@@ -44,7 +34,8 @@ public class ProcessReader implements it.polito.dp2.WF.ProcessReader {
 
 	@Override
 	public WorkflowReader getWorkflow() {
-		return (new WorkflowReader(WorkFlowModel.findWorkflow(workflowName)));
+		HashMap<String,String> att = WorkFlowModel.getAttibutes(process);
+		return (new WorkflowReader(WorkFlowModel.findWorkflow(att.get("workflowName"))));
 	}
 
 }

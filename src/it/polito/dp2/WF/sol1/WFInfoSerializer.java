@@ -42,7 +42,7 @@ public class WFInfoSerializer {
 	 * @throws WorkflowMonitorException 
 	 */
 	public WFInfoSerializer() throws WorkflowMonitorException {
-		System.setProperty("it.polito.dp2.WF.WorkflowMonitorFactory", "it.polito.dp2.WF.Random.WorkflowMonitorFactoryImpl");
+		//System.setProperty("it.polito.dp2.WF.WorkflowMonitorFactory", "it.polito.dp2.WF.Random.WorkflowMonitorFactoryImpl");
 		WorkflowMonitorFactory factory = WorkflowMonitorFactory.newInstance();
 		monitor = factory.newWorkflowMonitor();
 		dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
@@ -143,7 +143,7 @@ public class WFInfoSerializer {
 				Element process = doc.createElement("process");
 				rootElement.appendChild(process);
 				
-				process.setAttribute("startAt", String.valueOf(wfr.getStartTime().getTime()));
+				process.setAttribute("startAt", String.valueOf(wfr.getStartTime().getTimeInMillis()));
 				process.setAttribute("workflowName", wfr.getWorkflow().getName());
 				/*System.out.println("Process started at " + 
 									dateFormat.format(wfr.getStartTime().getTime()) +

@@ -40,7 +40,7 @@ public class WorkflowReader implements it.polito.dp2.WF.WorkflowReader {
 		Set<it.polito.dp2.WF.ProcessReader> ret = new HashSet<it.polito.dp2.WF.ProcessReader>();
 		
 		for(Node currentNode:WorkFlowModel.whereProcesses(name))
-			ret.add(new ProcessReader(currentNode, name));
+			ret.add(new ProcessReader(currentNode));
 		
 		return ret;
 	}

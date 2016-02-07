@@ -11,13 +11,8 @@ public class WorkflowMonitor implements it.polito.dp2.WF.WorkflowMonitor {
 	public Set<it.polito.dp2.WF.ProcessReader> getProcesses() {
 		Set<it.polito.dp2.WF.ProcessReader> ret = new HashSet<it.polito.dp2.WF.ProcessReader>();
 		
-		for(Node workflowNode:WorkFlowModel.allWorkflow())
-		{
-			HashMap<String,String> attr = WorkFlowModel.getAttibutes(workflowNode);
-			String name = attr.get("name");
-			for(Node processNode:WorkFlowModel.whereProcesses(name))
-				ret.add(new ProcessReader(processNode, name));
-		}
+		for(Node processNode:WorkFlowModel.allProcesses())
+			ret.add(new ProcessReader(processNode));
 		
 		return ret;
 	}
